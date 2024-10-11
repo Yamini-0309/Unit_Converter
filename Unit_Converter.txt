@@ -1,0 +1,168 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Picker } from 'react-native';
+
+const Converter = () => {
+  const [inputValue, setInputValue] = useState('');
+  const [selectedUnit, setSelectedUnit] = useState('km');
+  const [convertedValue, setConvertedValue] = useState('');
+  const [unitType, setUnitType] = useState('distance');
+
+  const convertUnits = () => {
+    const value = parseFloat(inputValue);
+    if (isNaN(value)) {
+      setConvertedValue('Invalid input');
+      return;
+    }
+    let result;
+    if (unitType === 'distance') {
+      if (selectedUnit === 'km') {
+        const conversionRate = 0.621371;
+        result = value * conversionRate;
+      } else if (selectedUnit === 'mi') {
+        const conversionRate = 1.60934;
+        result = value * conversionRate;
+      }
+    } else if (unitType === 'weight') {
+      if (selectedUnit === 'kg') {
+        const conversionRate = 2.20462;
+        result = value * conversionRate;
+      } else if (selectedUnit === 'lbs') {
+        const conversionRate = 0.453592;
+        result = value * conversionRate;
+      }
+    }
+    setConvertedValue(result.toFixed(2));
+  };
+
+  const clearInputs = () => {
+    setInputValue('');
+    setConvertedValue('');
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Unit Converter</Text>
+      
+      <TextInput
+        style={styles.input}
+        placeholder="Enter value"
+        keyboardType="numeric"
+        placeholderTextColor="#f0e68c"
+        value={inputValue}
+        onChangeText={(text) => setInputValue(text)}
+      />
+
+      <Picker
+        selectedValue={unitType}
+        onValueChange={(value) => setUnitType(value)}
+        style={styles.pickerInput}
+      >
+        <Picker.Item label="Distance" value="distance" />
+        <Picker.Item label="Weight" value="weight" />
+      </Picker>
+
+      <Picker
+        selectedValue={selectedUnit}
+        onValueChange={(value) => setSelectedUnit(value)}
+        style={styles.pickerInput}
+      >
+        {unitType === 'distance' ? (
+          <>
+            <Picker.Item label="Kilometers (km)" value="km" />
+            <Picker.Item label="Miles (mi)" value="mi" />
+          </>
+        ) : (
+          <>
+            <Picker.Item label="Kilograms (kg)" value="kg" />
+            <Picker.Item label="Pounds (lbs)" value="lbs" />
+          </>
+        )}
+      </Picker>
+
+      <TouchableOpacity style={styles.convertButton} onPress={convertUnits}>
+        <Text style={styles.convertButtonText}>Convert</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.clearButton} onPress={clearInputs}>
+        <Text style={styles.clearButtonText}>Clear</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.result}>Converted Value: {convertedValue}</Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 30,
+    justifyContent: 'center',
+    backgroundColor: '#800080',
+  },
+  header: {
+    fontSize: 36,
+    color: '#f0e68c',
+    marginBottom: 20,
+    fontFamily: 'serif',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  input: {
+    height: 60,
+    borderColor: '#f0e68c',
+    borderWidth: 2,
+    color: '#f0e68c',
+    marginBottom: 20,
+    paddingHorizontal: 20,
+    fontSize: 22,
+    fontFamily: 'serif',
+    fontWeight: 'bold',
+    borderRadius: 10,
+  },
+  pickerInput: {
+    height: 60,
+    color: '#800080',
+    borderColor: '#f0e68c',
+    borderWidth: 2,
+    marginBottom: 20,
+    fontSize: 22,
+    fontFamily: 'serif',
+    fontWeight: 'bold',
+  },
+  convertButton: {
+    backgroundColor: '#f0e68c',
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  convertButtonText: {
+    color: '#800080',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'serif',
+  },
+  clearButton: {
+    backgroundColor: '#f0e68c',
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  clearButtonText: {
+    color: '#800080',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'serif',
+  },
+  result: {
+    color: '#f0e68c',
+    fontSize: 28,
+    fontFamily: 'serif',
+    fontWeight: 'bold',
+    marginTop: 30,
+    textAlign: 'center',
+  },
+});
+
+export default Converter;
